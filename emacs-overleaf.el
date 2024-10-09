@@ -43,10 +43,21 @@
       (remove-hook 'after-save-hook #'overleaf-after-save))
     ))
 
+(defun overleaf--get-parsed-git-url ()
+  "Get the parsed git url of the project"
+  (url-generic-parse-url (magit-get
+                          (format "remote.%s.url"
+                                  (magit-get-current-remote)))))
+
+(defun overleaf--get-website-url ()
+  "Get the git url of the project"
+  (let* ((url-obj (overleaf--get-parsed-git-url))
+         (new-host (string-remove-prefix "git." (url-host url-obj))))
+    (format "%s://%s/project%s" (url-type url-obj) new-host (url-filename url-obj))))
+
 (defun overleaf--is-remote-overleaf ()
   "non-nil if the remote is overleaf repo."
-  (let ((url (magit-get (format "remote.%s.url" (magit-get-current-remote)))))
-    (string-match-p (regexp-quote "overleaf") url)))
+  (string-match-p (regexp-quote "overleaf") (url-host (overleaf--get-parsed-git-url))))
 
 (defvar-local overleaf-auto-sync "ask"
   "Determines how saving a buffer will trigger pushing changes to Overleaf.
@@ -224,7 +235,9 @@ Call asynchronous magit processes to commit and push staged files (if exist) to 
                              (get-buffer overleaf-posframe-buffer))))
     (redirect-frame-focus current-frame
                           (frame-parent current-frame))))
-
+(defun overleaf-browse-at-remote ()
+  "Open Overleaf project in browser"
+  (browse-url (overleaf--get-website-url)))
 
 (provide 'emacs-overleaf)
 ;;; emacs-overleaf.el ends here
