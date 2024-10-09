@@ -9,7 +9,7 @@
 ;; Version: 0.0.1
 ;; Keywords: Overleaf sync LaTeX
 ;; Homepage: https://github.com/jonghyun-yun/overleaf
-;; Package-Requires: ((emacs "26.1") (posframe "1.0.0") (projectile "2.5.0") (magit "3.0.0") (browse-at-remote))
+;; Package-Requires: ((emacs "26.1") (posframe "1.0.0") (projectile "2.5.0") (magit "3.0.0"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -20,7 +20,6 @@
 ;;; Code:
 
 (require 'magit)
-(require 'browse-at-remote)
 (require 'posframe)
 (require 'projectile)
 
@@ -44,15 +43,10 @@
       (remove-hook 'after-save-hook #'overleaf-after-save))
     ))
 
-(defun overleaf--remote-homepage ()
-  "Get the url of the remote."
-  (or (let ((url (browse-at-remote--remote-ref)))
-        (cdr (browse-at-remote--get-url-from-remote (car url))))
-      (user-error "Can't find the remote for current project")))
-
 (defun overleaf--is-remote-overleaf ()
   "non-nil if the remote is overleaf repo."
-  (string-match-p (regexp-quote "overleaf") (overleaf--remote-homepage)))
+  (let ((url (magit-get (format "remote.%s.url" (magit-get-current-remote)))))
+    (string-match-p (regexp-quote "overleaf") url)))
 
 (defvar-local overleaf-auto-sync "ask"
   "Determines how saving a buffer will trigger pushing changes to Overleaf.
