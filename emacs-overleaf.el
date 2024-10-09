@@ -75,14 +75,14 @@ Should be one of the following strings:
 (defun overleaf--set-directory ()
   "Find a project directory"
   (setq-local overleaf-directory
-                (file-name-directory
-                 (file-truename (projectile-project-name)))))
+              (file-name-directory
+               (file-truename (projectile-project-name)))))
 
 (defvar overleaf-last-sync-time nil
   "The last overleaf sync time.")
 
 (defvar overleaf-last-ask-time nil
-"The last time overleaf ask for push.")
+  "The last time overleaf ask for push.")
 
 (defcustom overleaf-dont-ask-too-often-time-interval (* 5 60)
   "If non-nil, you won't be asked for `overleaf-dont-ask-too-often-time-interval' (in seconds) since the last you asked.")
@@ -157,7 +157,7 @@ Only `background` is used in this face."
 
 (defun overleaf-setup-push ()
   "Add hook for local overleaf push."
-    (add-hook 'after-save-hook #'overleaf-after-save))
+  (add-hook 'after-save-hook #'overleaf-after-save))
 
 
 (defun overleaf-setup ()
@@ -201,8 +201,8 @@ Call asynchronous magit processes to commit and push staged files (if exist) to 
 
 (defun overleaf--check-time (overleaf-last-time overleaf-time-interval)
   "Check if required time passed since the last sync."
-    (or (not overleaf-last-time)
-              (> (float-time (time-since overleaf-last-time)) overleaf-time-interval)))
+  (or (not overleaf-last-time)
+      (> (float-time (time-since overleaf-last-time)) overleaf-time-interval)))
 
 (defun overleaf-posframe-check-position ()
   "Update overleaf-posframe-last-position, returning t if there was no change."
@@ -235,6 +235,7 @@ Call asynchronous magit processes to commit and push staged files (if exist) to 
                              (get-buffer overleaf-posframe-buffer))))
     (redirect-frame-focus current-frame
                           (frame-parent current-frame))))
+
 (defun overleaf-browse-at-remote ()
   "Open Overleaf project in browser"
   (browse-url (overleaf--get-website-url)))
